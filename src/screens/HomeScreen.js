@@ -16,18 +16,26 @@ import Modal from "react-native-modal";
 import { LogBox } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useFonts } from "expo-font";
+import axios from 'axios';
 
 
 const HomeScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [link, setLink] = useState();
   const [selectedApp, setSelectedApp] = useState(1);
+  
   const [add, setAdd] = useState(true);
   const [selectedItem, setSeletedItem] = useState();
   let [fontsLoaded] = useFonts({
     text: require("../../assets/fonts/GlacialIndifference-Regular.otf"),
     title: require("../../assets/fonts/GlacialIndifference-Bold.otf"),
   });
+
+  useEffect(() => {
+    async function getItems() {
+      
+    }
+  }, [])
 
   useEffect(() => {
     if (selectedItem && !add) {
