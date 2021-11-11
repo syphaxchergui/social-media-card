@@ -16,15 +16,19 @@ import Modal from "react-native-modal";
 import { LogBox } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useFonts } from "expo-font";
-import axios from 'axios';
-
+import axios from "axios";
+import myCardApi from "../api/myCardApi";
 
 const HomeScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [link, setLink] = useState();
   const [selectedApp, setSelectedApp] = useState(1);
-  
+
+
   const [add, setAdd] = useState(true);
+  const [result, setResult] = useState();
+  const [resultLoading, setResultLoading] = useState(false);
+
   const [selectedItem, setSeletedItem] = useState();
   let [fontsLoaded] = useFonts({
     text: require("../../assets/fonts/GlacialIndifference-Regular.otf"),
@@ -33,9 +37,18 @@ const HomeScreen = () => {
 
   useEffect(() => {
     async function getItems() {
-      
+      try {
+        setResultLoading(true);
+        const res = await myCardApi.get('/read_links.php?user_id=1');
+        setResult(res.data);
+        console.log(res);
+        setResultLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }, [])
+    getItems()
+  }, []);
 
   useEffect(() => {
     if (selectedItem && !add) {
@@ -52,7 +65,7 @@ const HomeScreen = () => {
   };
 
   LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
-  let data = [
+  /* let data = [
     {
       id: "0",
       link: "facebookfacebook",
@@ -71,7 +84,7 @@ const HomeScreen = () => {
       color: "#FFADAC",
       icon: "instagram",
     },
-  ];
+  ]; */
   if (fontsLoaded)
     return (
       <SafeAreaView
@@ -84,14 +97,8 @@ const HomeScreen = () => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View>
               <FlatList
-                data={[
-                  {
-                    id: "100",
-                    link: "0775797375",
-                    color: "#CAFFBF",
-                    icon: "phone",
-                  },
-                  ...data,
+                data={!resultLoading ? [] : [
+                  ...result,
                   {
                     id: "$",
                     link: "",
